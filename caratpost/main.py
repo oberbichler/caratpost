@@ -86,7 +86,7 @@ HTML_TEMPLATE = '''
 
         document.body.appendChild(renderer.domElement);
         
-        function update(timestep) {
+        function update(timestep, section) {
             while (scene.children.length > 0) { 
                 scene.remove(scene.children[0]); 
             }
@@ -130,16 +130,29 @@ HTML_TEMPLATE = '''
             var mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
 
+            renderer.clippingPlanes = [
+                new THREE.Plane(new THREE.Vector3(0, 0, 1), -10 * section / 100),
+            ];
+
             renderer.render(scene, camera);
 
             document.getElementById("currenttimestep").innerText = timestep;
+            document.getElementById("currentsection").innerText = `${section}%`;
         }
 
-        update(-1);
+        update(-1, 0);
     </script>
     <div id="loadcase">
-      <input type="range" min="-1" max="%NB_TIMESTEPS%" value="-1" step="1" class="slider" id="timestep" oninput="update(this.value)">
-      <span id="currenttimestep">-1</span>
+        <p>
+            <span>Timestep</span>
+            <input type="range" min="-1" max="%NB_TIMESTEPS%" value="-1" step="1" class="slider" id="timestep" oninput="update(this.value, document.getElementById('section').value)">
+            <span id="currenttimestep">-1</span>
+        </p>
+        <p>
+            <span>Section</span>
+            <input type="range" min="0" max="100" value="0" step="1" class="slider" id="section" oninput="update(document.getElementById('timestep').value, this.value)">
+            <span id="currentsection">0</span>
+        </p>
     </div>
 </body>
 
