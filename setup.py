@@ -14,7 +14,6 @@ setup(
     author='Thomas Oberbichler',
     author_email='thomas.oberbichler@tum.de',
     install_requires=[
-        'numpy',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
