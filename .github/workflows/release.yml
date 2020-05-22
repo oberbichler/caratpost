@@ -22,7 +22,7 @@ jobs:
         import regex as re
         # settings
         tag = '${{ github.ref }}'[10:]
-        path = './nfem/__init__.py'
+        path = './setup.py'
         # get version string from tag
         pattern = 'v(\d+)(?:\.(\d+)(?:\.(\d+)(?:\.(\d+))?)?)?$'
         match = re.match(pattern, tag)
