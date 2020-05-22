@@ -3,9 +3,11 @@ from setuptools import setup
 import os
 import re
 
+__version__ = 'dev'
+
 setup(
     name='caratpost',
-    version='0.1',
+    version=__version__,
     packages=[
         'caratpost',
     ],
