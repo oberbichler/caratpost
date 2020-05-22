@@ -91,7 +91,7 @@ HTML_TEMPLATE = '''
                 scene.remove(scene.children[0]); 
             }
 
-            var displacement = displacements[timestep];
+            var displacement = timestep < 0 ? null : displacements[timestep];
 
             var ambientLight = new THREE.AmbientLight(0x0c0c0c);
             scene.add(ambientLight);
@@ -106,8 +106,12 @@ HTML_TEMPLATE = '''
             var geometry = new THREE.Geometry();
 
             for (let [key, x, y, z] of vertices) {
-                var d = displacement[key];
-                geometry.vertices.push(new THREE.Vector3(x + d[0], z + d[2], y + d[1]));
+                if (displacement == null) {
+                    geometry.vertices.push(new THREE.Vector3(x, z, y));
+                } else {
+                    var d = displacement[key];
+                    geometry.vertices.push(new THREE.Vector3(x + d[0], z + d[2], y + d[1]));
+                }
             }
 
             for (let [_, a, b, c, d] of faces) {
@@ -131,11 +135,11 @@ HTML_TEMPLATE = '''
             document.getElementById("currenttimestep").innerText = timestep;
         }
 
-        update(0);
+        update(-1);
     </script>
     <div id="loadcase">
-      <input type="range" min="0" max="%NB_TIMESTEPS%" value="0" step="1" class="slider" id="timestep" oninput="update(this.value)">
-      <span id="currenttimestep">0</span>
+      <input type="range" min="-1" max="%NB_TIMESTEPS%" value="-1" step="1" class="slider" id="timestep" oninput="update(this.value)">
+      <span id="currenttimestep">-1</span>
     </div>
 </body>
 
@@ -341,7 +345,7 @@ def main():
         result = HTML_TEMPLATE.replace('%VERTICES%', str(vertices)) \
                               .replace('%FACES%', str(faces)) \
                               .replace('%DISPLACEMENTS%', str(displacements)) \
-                              .replace('%NB_TIMESTEPS%', str(len(displacements)))
-        
+                              .replace('%NB_TIMESTEPS%', str(len(displacements) - 1))
+
         with open(result_path, 'w') as f:
             f.write(result)
